@@ -1,3 +1,4 @@
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 int main()
@@ -23,8 +24,35 @@ int main()
     // --------------Initailze-----------------------
 
 
+    //---------------Load----------------------------
+    
+    sf::Texture playerTexture("assets/player/textures/BODY_skeleton.png");
+    sf::Sprite playerSprite(playerTexture);
+    if (playerTexture.loadFromFile("assets/player/textures/BODY_skeleton.png")) {
+        std::cout << "Player image loaded\n";
+        playerSprite.setTexture(playerTexture);
+
+        int xIndex = 4;
+        int yIndex = 2;
+
+        playerSprite.setTextureRect( sf::IntRect({xIndex*64, yIndex*64}, {64, 64}));
+        playerSprite.scale(sf::Vector2f(3, 3));
+    }
+    else {
+        std::cout << "Player image failed to load\n";
+    }
+
+
+
+
+    //---------------Load----------------------------
+
+
+
     // main game loop
 	while (window.isOpen()) {
+
+        //---------------update--------------------------
 
         while (const std::optional event = window.pollEvent())
         {
@@ -34,15 +62,31 @@ int main()
                     event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Escape))
                 window.close();
 
-            
         }
 
+        // Handle Player MOvement
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+            playerSprite.move({ 0, -1.0f });
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+            playerSprite.move({ 0, 1.0f });
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+            playerSprite.move({ -1.0f, 0 });
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+            playerSprite.move({ 1.0f, 0 });
+
+
+        //---------------update--------------------------
+
+        //---------------draw----------------------------
 
         window.clear(sf::Color::Black);
-        window.draw(shape);
-        window.draw(rectangle);
+        window.draw(playerSprite);
         window.display();
 
+        //---------------draw----------------------------
 
 
 
