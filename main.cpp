@@ -1,46 +1,56 @@
 #include <iostream>
+#include <math.h>
+#include <cmath>
 #include <SFML/Graphics.hpp>
+#include "Player.h"
+
+sf::Vector2f normalizeVector(sf::Vector2f vector) {
+    float m = std::sqrt(vector.x * vector.x + vector.y * vector.y);
+    sf::Vector2f normalizedVec;
+    normalizedVec.x = vector.x / m;
+    normalizedVec.y = vector.y / m;
+
+    return normalizedVec;
+}
 
 int main()
 {
+
     // --------------Initailze-----------------------
     sf::ContextSettings settings;
     settings.antiAliasingLevel = 8;
 
-    sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "Glory Run", sf::Style::Default, sf::State::Windowed, settings);
+    sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Glory Run", sf::Style::Default, sf::State::Windowed, settings);
 
-    sf::CircleShape shape(50.0f, 12);
-    shape.setFillColor(sf::Color::Red);
-    shape.setPosition(sf::Vector2f(100, 100));
-    shape.setOutlineThickness(10);
-    shape.setOutlineColor(sf::Color::Green);
-    
-    sf::RectangleShape rectangle(sf::Vector2f(200, 2));
-    rectangle.setPosition(sf::Vector2f(100, 100));
-    rectangle.setFillColor(sf::Color::Blue);
-    //rectangle.setOrigin(sf::Vector2f(50.0f, 25.0f));
-    rectangle.setRotation(sf::degrees(45));
-
+    player.Initialize();
+    player.Load();
     // --------------Initailze-----------------------
 
+    std::vector<sf::RectangleShape> bullets;
+    float bulletSpeed = 5.0f;
 
     //---------------Load----------------------------
     
-    sf::Texture playerTexture("assets/player/textures/BODY_skeleton.png");
-    sf::Sprite playerSprite(playerTexture);
-    if (playerTexture.loadFromFile("assets/player/textures/BODY_skeleton.png")) {
-        std::cout << "Player image loaded\n";
-        playerSprite.setTexture(playerTexture);
 
-        int xIndex = 4;
-        int yIndex = 2;
+    sf::Texture enemyTexture("assets/enemy/textures/BODY_skeleton.png");
+    sf::Sprite enemySprite(enemyTexture);
+    if (enemyTexture.loadFromFile("assets/player/textures/BODY_skeleton.png")) {
+        std::cout << "Enemy image loaded\n";
+        enemySprite.setPosition({100, 700});
+        int xIndex = 0;
+        int yIndex = 0;
 
-        playerSprite.setTextureRect( sf::IntRect({xIndex*64, yIndex*64}, {64, 64}));
-        playerSprite.scale(sf::Vector2f(3, 3));
+        enemySprite.setTextureRect(sf::IntRect({ xIndex * 64, yIndex * 64 }, { 64, 64 }));
+        enemySprite.scale(sf::Vector2f(1, 1));
     }
     else {
-        std::cout << "Player image failed to load\n";
+        std::cout << "Enemy image failed to load\n";
     }
+
+
+
+    
+    
 
 
 
@@ -49,7 +59,7 @@ int main()
 
 
 
-    // main game loop
+    // main game loop-------------------------------------------------------------------------------------------------------------------
 	while (window.isOpen()) {
 
         //---------------update--------------------------
@@ -64,26 +74,39 @@ int main()
 
         }
 
-        // Handle Player MOvement
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-            playerSprite.move({ 0, -1.0f });
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-            playerSprite.move({ 0, 1.0f });
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-            playerSprite.move({ -1.0f, 0 });
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-            playerSprite.move({ 1.0f, 0 });
+        
 
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+            sf::RectangleShape newBullet(sf::Vector2f(10.0f, 5.0f));
+            bullets.push_back(newBullet);
+            int i = bullets.size() - 1;
+            bullets[i].setPosition(player.sprite.getPosition());
+
+
+        }
+
+        for (int i = 0; i < bullets.size(); i++) {
+            sf::Vector2f bulletdirection = enemySprite.getPosition() - bullets[i].getPosition();
+            bulletdirection = normalizeVector(bulletdirection);
+            bullets[i].setPosition(bullets[i].getPosition() + bulletdirection * bulletSpeed);
+        }
+
+        player.Update();
 
         //---------------update--------------------------
 
         //---------------draw----------------------------
 
         window.clear(sf::Color::Black);
-        window.draw(playerSprite);
+        window.draw(enemySprite);
+        window.draw(player.sprite);
+
+        for (int i = 0; i < bullets.size(); i++)
+            window.draw(bullets[i]);
+
         window.display();
 
         //---------------draw----------------------------
