@@ -24,19 +24,19 @@ void Player::Load() {
         std::cout << "Enemy image failed to load\n";
     }
 }
-void Player::Update(Enemy &enemy) {
+void Player::Update(float deltaTime, Enemy &enemy) {
     // Handle Movement
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-        sprite.move({ 0, -1.0f });
+        sprite.move({ 0, -1.0f * playerSpeed * deltaTime });
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-        sprite.move({ 0, 1.0f });
+        sprite.move({ 0, 1.0f * playerSpeed * deltaTime });
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-        sprite.move({ -1.0f, 0 });
+        sprite.move({ -1.0f * playerSpeed * deltaTime, 0 });
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-        sprite.move({ 1.0f, 0 });
+        sprite.move({ 1.0f * playerSpeed * deltaTime, 0 });
 
     boundingRect.setPosition(sprite.getPosition());
 
@@ -54,8 +54,13 @@ void Player::Update(Enemy &enemy) {
     for (int i = 0; i < bullets.size(); i++) {
         sf::Vector2f bulletdirection = enemy.sprite.getPosition() - bullets[i].getPosition();
         bulletdirection = Math::NormalizeVector(bulletdirection);
-        bullets[i].setPosition(bullets[i].getPosition() + bulletdirection * bulletSpeed);
+        bullets[i].setPosition(bullets[i].getPosition() + bulletdirection * bulletSpeed * deltaTime);
     }
+
+    if (Math::CheckRectCollision(sprite.getGlobalBounds(), enemy.sprite.getGlobalBounds())) {
+        std::cout << "Collision!";
+    }
+
 }
 
 void Player::Draw(sf::RenderWindow &window) {

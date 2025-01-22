@@ -11,6 +11,6 @@ public:
     sf::Sprite sprite = sf::Sprite(texture);
     void Initilize();
     void Load();
-    void Update();
+    void Update(float deltaTime);
     void Draw(sf::RenderWindow& window);
 };

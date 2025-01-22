@@ -14,6 +14,7 @@ int main()
     sf::ContextSettings settings;
     settings.antiAliasingLevel = 8;
     sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Glory Run", sf::Style::Default, sf::State::Windowed, settings);
+    window.setFramerateLimit(60);
 
     Player player;
     Enemy enemy;
@@ -30,12 +31,17 @@ int main()
     enemy.Load();
     player.Load();
 
+    sf::Clock clock;
+
     //---------------Load----------------------------
 
     // main game loop-------------------------------------------------------------------------------------------------------------------
 	while (window.isOpen()) {
 
         //---------------update--------------------------
+
+        sf::Time deltaTimeTimer = clock.restart();
+        float deltaTime = deltaTimeTimer.asMilliseconds();
 
         while (const std::optional event = window.pollEvent())
         {
@@ -47,7 +53,8 @@ int main()
 
         }
 
-        player.Update(enemy);
+        enemy.Update(deltaTime);
+        player.Update(deltaTime, enemy);
 
         //---------------update--------------------------
 
@@ -59,6 +66,8 @@ int main()
   
         window.display();
         //---------------draw----------------------------
+
+        
 	}
 
 	return 0;

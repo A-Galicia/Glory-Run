@@ -26,6 +26,10 @@ void Enemy::Load() {
     boundingRect.setPosition(sprite.getPosition());
 }
 
+void Enemy::Update(float deltaTime) {
+
+}
+
 void Enemy::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
     window.draw(boundingRect);
