@@ -2,6 +2,11 @@
 #include "Math.h"
 #include <iostream>
 
+Player::Player() : 
+    bulletSpeed(.5), playerSpeed(1), maxfireRate(250), fireRateTimer(0) {
+
+}
+
 void Player::Initilize() {
     boundingRect.setFillColor(sf::Color::Transparent);
     boundingRect.setOutlineColor(sf::Color::Red);
@@ -41,24 +46,27 @@ void Player::Update(float deltaTime, Enemy &enemy) {
     boundingRect.setPosition(sprite.getPosition());
 
 
-    // HANDLE bullets
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+    // Handle bullets
+    fireRateTimer += deltaTime;
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && fireRateTimer >= maxfireRate) {
         sf::RectangleShape newBullet(sf::Vector2f(10.0f, 5.0f));
         bullets.push_back(newBullet);
         int i = bullets.size() - 1;
         bullets[i].setPosition(sprite.getPosition());
 
-
+        fireRateTimer = 0;
     }
 
-    for (int i = 0; i < bullets.size(); i++) {
+    for (size_t i = 0; i < bullets.size(); i++) {
         sf::Vector2f bulletdirection = enemy.sprite.getPosition() - bullets[i].getPosition();
         bulletdirection = Math::NormalizeVector(bulletdirection);
         bullets[i].setPosition(bullets[i].getPosition() + bulletdirection * bulletSpeed * deltaTime);
-    }
 
-    if (Math::CheckRectCollision(sprite.getGlobalBounds(), enemy.sprite.getGlobalBounds())) {
-        std::cout << "Collision!";
+        if (Math::CheckRectCollision(bullets[i].getGlobalBounds(), enemy.sprite.getGlobalBounds())) {
+            bullets.erase(bullets.begin() + i);
+            std::cout << "Collision!";
+        }
     }
 
 }

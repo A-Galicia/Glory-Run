@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Enemy.h"
-
+#include "Math.h"
 
 
 int main()
@@ -22,16 +22,17 @@ int main()
     player.Initilize();
     enemy.Initilize();
 
+    sf::Clock clock;
+
+    FrameRate frameRate;
+
     // --------------Initailze-----------------------
 
 
-
     //---------------Load----------------------------
-    
+
     enemy.Load();
     player.Load();
-
-    sf::Clock clock;
 
     //---------------Load----------------------------
 
@@ -41,7 +42,8 @@ int main()
         //---------------update--------------------------
 
         sf::Time deltaTimeTimer = clock.restart();
-        float deltaTime = deltaTimeTimer.asMilliseconds();
+        float deltaTime = deltaTimeTimer.asMilliseconds(); 
+
 
         while (const std::optional event = window.pollEvent())
         {
@@ -55,6 +57,7 @@ int main()
 
         enemy.Update(deltaTime);
         player.Update(deltaTime, enemy);
+        frameRate.Update(deltaTime);
 
         //---------------update--------------------------
 
@@ -63,7 +66,7 @@ int main()
         window.clear(sf::Color::Black);
         enemy.Draw(window);
         player.Draw(window);
-  
+        frameRate.Draw(window);
         window.display();
         //---------------draw----------------------------
 

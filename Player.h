@@ -10,10 +10,13 @@ private:
     sf::RectangleShape boundingRect;
 
     std::vector<sf::RectangleShape> bullets;
-    float bulletSpeed = 5.0f;
-    float playerSpeed = 1.0f;
+    float bulletSpeed;
+    float playerSpeed;
+    float maxfireRate;
+    float fireRateTimer;
 public:
     sf::Sprite sprite = sf::Sprite(texture);
+    Player();
     void Initilize();
     void Load();
     void Update(float deltaTime, Enemy &enemy);
