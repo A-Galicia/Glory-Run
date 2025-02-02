@@ -135,22 +135,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="src\Enemy.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Math.cpp" />
+    <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="Math.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\Map.h" />
+    <ClInclude Include="src\Math.h" />
+    <ClInclude Include="src\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\world\TileSheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\maps\Level 1.txt" />
+    <Text Include="Text.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

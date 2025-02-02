@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Math.h"
-
+#include "Map.h";
 
 int main()
 {
@@ -18,13 +18,18 @@ int main()
 
     Player player;
     Enemy enemy;
+    Map map;
+    sf::Clock clock;
+    FrameRate frameRate;
+    MapLoader mapLoader;
+
+    mapLoader.Load("assets/maps/level 1.txt");
+
 
     player.Initilize();
     enemy.Initilize();
+    map.Initilize();
 
-    sf::Clock clock;
-
-    FrameRate frameRate;
 
     // --------------Initailze-----------------------
 
@@ -33,6 +38,7 @@ int main()
 
     enemy.Load();
     player.Load();
+    map.Load();
 
     //---------------Load----------------------------
 
@@ -42,7 +48,7 @@ int main()
         //---------------update--------------------------
 
         sf::Time deltaTimeTimer = clock.restart();
-        float deltaTime = deltaTimeTimer.asMilliseconds(); 
+        double deltaTime = deltaTimeTimer.asMilliseconds(); 
 
 
         while (const std::optional event = window.pollEvent())
@@ -55,15 +61,19 @@ int main()
 
         }
 
+        sf::Vector2f mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
+
+        map.Update();
         enemy.Update(deltaTime);
-        player.Update(deltaTime, enemy);
+        player.Update(deltaTime, enemy, mousePosition);
         frameRate.Update(deltaTime);
 
         //---------------update--------------------------
 
         //---------------draw----------------------------
 
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color::Red);
+        map.Draw(window);
         enemy.Draw(window);
         player.Draw(window);
         frameRate.Draw(window);

@@ -1,6 +1,16 @@
 #include "Enemy.h"
 #include <iostream>
 
+Enemy::Enemy() :
+    health(100){
+
+}
+
+void Enemy::SetHealth(int hp) {
+    health += hp;
+    healthText.setString(std::to_string(health));
+}
+
 void Enemy::Initilize() {
     boundingRect.setFillColor(sf::Color::Transparent);
     boundingRect.setOutlineColor(sf::Color::Blue);
@@ -9,6 +19,16 @@ void Enemy::Initilize() {
 }
 
 void Enemy::Load() {
+
+    if (!font.openFromFile("assets/arial.ttf")) {
+        std::cout << "Couldn't open Font file\n";
+    }
+    else {
+        std::cout << "Loaded font: Arial\n";
+        healthText.setFont(font);
+        
+    }
+
     if (texture.loadFromFile("assets/player/textures/BODY_skeleton.png")) {
         std::cout << "Enemy image loaded\n";
         sprite.setPosition({ 100, 100 });
@@ -23,14 +43,23 @@ void Enemy::Load() {
         std::cout << "Enemy image failed to load\n";
     }
 
-    boundingRect.setPosition(sprite.getPosition());
+    
 }
 
-void Enemy::Update(float deltaTime) {
+void Enemy::Update(double deltaTime) {
+    if (health > 0) {
+        boundingRect.setPosition(sprite.getPosition());
+        healthText.setPosition(sprite.getPosition());
+        healthText.setString(std::to_string(health));
+    }
 
 }
 
 void Enemy::Draw(sf::RenderWindow& window) {
-    window.draw(sprite);
-    window.draw(boundingRect);
+    if (health > 0) {
+        window.draw(sprite);
+        window.draw(boundingRect);
+        window.draw(healthText);
+
+    }
 }
