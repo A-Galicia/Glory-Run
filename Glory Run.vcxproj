@@ -159,7 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\maps\Level 1.txt" />
-    <Text Include="Text.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

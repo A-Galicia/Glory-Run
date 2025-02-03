@@ -37,6 +37,22 @@ struct Tile : private Map {
 
 };
 
+struct MapData {
+    std::string tileSheet = "";
+    int version = 0;
+    std::string name = "";
+
+    int tileWidth = 0;
+    int tileHeight = 0;
+
+    int scaleX = 0;
+    int scaleY = 0;
+
+    int dataLength = 0;
+    int* data = nullptr;
+    
+};
+
 class MapLoader {
 public:
     void Load(std::string filename);

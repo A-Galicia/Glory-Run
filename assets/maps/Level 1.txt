@@ -1,9 +1,10 @@
 [Map]
-tileSheet="C:/Users/alfga/OneDrive/Documents/0 - Pro Docs/Projects/Glory Run/assets/world/TileSheet.png"
+version=1
+tileSheet="C:\Users\alfga\OneDrive\Documents\0 - Pro Docs\Projects\Glory Run\assets\world"
 name=level 1
-tile-width=16
-tile-height=16
-scale-x=5
-scale-y=5
-
+tileWidth=16
+tileHeight=16
+scaleX=5
+scaleY=5
+dataLength=6
 data=120, 121, 122, 144, 145, 156

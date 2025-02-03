@@ -17,6 +17,7 @@ void Map::Initilize()
 
 void Map::Load()
 {
+
     if (tileSheetTexture.loadFromFile("assets/world/TileSheet.png")) {
 
         totalTilesX = tileSheetTexture.getSize().x / tileWidth;
@@ -75,6 +76,7 @@ void Map::Draw(sf::RenderWindow& window)
 
 void MapLoader::Load(std::string filename)
 {
+    MapData data;
     std::string line;
     std::ifstream file(filename);
 
@@ -100,12 +102,49 @@ void MapLoader::Load(std::string filename)
                 int count = line.find('=');
                 std::string var = line.substr(0, count);
                 std::string val = line.substr(count + 1, line.length() - count);
-                std::cout << var << '\n';
-                std::cout << val << '\n';
 
-                break;
+                if (var == "version") {
+                data.version = std::stoi(val);
+                }
+                if (var == "tileSheet") {
+                    data.tileSheet = val;
+                }             
+                else if (var == "name") {
+                    data.name = val;
+                }
+                else if (var == "tileWidth") {
+                    data.tileWidth = std::stoi(val);
+                }
+                else if (var == "tileHeight") {
+                    data.tileHeight = std::stoi(val);
+                }
+                else if (var == "scaleX") {
+                    data.scaleX = std::stoi(val);
+                }
+                else if (var == "scaleY") {
+                    data.scaleY = std::stoi(val);
+                }
+                else if (var == "dataLength") {
+                    data.dataLength = std::stoi(val);
+                }
+                else if (var == "data") {
+
+                    data.data = new int[data.dataLength];
+
+                    int offset = 0;
+                    for (int i = 0; i < data.dataLength; i++) {
+                        int index = val.find(',', offset);
+                        std::string subData = val.substr(offset, index - offset);
+                        data.data[i] = std::stoi(subData);
+                        offset = index + 1;
+                    }
+
+                }
             }
+
+
         }
+
 
         file.close();
     }
