@@ -3,8 +3,9 @@
 #include <fstream>
 #include <string>
 
+
 Map::Map():
-    tileWidth(16), tileHeight(16), totalTilesX(0), totalTilesY(0), totalTiles(0), mapWidth(3), mapHeight(2), tiles(nullptr), mapSprites{sf::Sprite(tileSheetTexture),sf::Sprite(tileSheetTexture), sf::Sprite(tileSheetTexture), sf::Sprite(tileSheetTexture),sf::Sprite(tileSheetTexture), sf::Sprite(tileSheetTexture)}
+    totalTilesX(0), totalTilesY(0), totalTiles(0),tiles(nullptr)
 {
 
 
@@ -15,13 +16,19 @@ void Map::Initilize()
 {
 }
 
-void Map::Load()
+void Map::Load(std::string filename)
 {
+    mapLoader.Load(filename, md);
 
-    if (tileSheetTexture.loadFromFile("assets/world/TileSheet.png")) {
 
-        totalTilesX = tileSheetTexture.getSize().x / tileWidth;
-        totalTilesY = tileSheetTexture.getSize().y / tileHeight;
+    if (tileSheetTexture.loadFromFile(md.tileSheet)) {
+
+        for (int i = 0; i < md.dataLength; i++) {
+            mapSprites.push_back(sf::Sprite(tileSheetTexture));
+        }
+
+        totalTilesX = tileSheetTexture.getSize().x / md.tileWidth;
+        totalTilesY = tileSheetTexture.getSize().y / md.tileHeight;
         std::cout << "World titleSheet loaded\n";
 
         totalTiles = totalTilesX * totalTilesY;
@@ -34,7 +41,7 @@ void Map::Load()
                 int i = x + y * totalTilesX;
 
                 tiles[i].id = i;
-                tiles[i].position = sf::Vector2i( x * tileWidth, y * tileHeight );
+                tiles[i].position = sf::Vector2i( x * md.tileWidth, y * md.tileHeight );
 
             }
 
@@ -45,19 +52,19 @@ void Map::Load()
         std::cout << "World titleSheet failed to load\n";
     }
 
-    for (int y = 0; y < mapHeight; y++) {
-        for (int x = 0; x < mapWidth; x++) {
-            int i = x + y * mapWidth;
-            int index = mapNumbers[i];
+    for (int y = 0; y < md.mapHeight; y++) {
+        for (int x = 0; x < md.mapWidth; x++) {
+            int i = x + y * md.mapWidth;
+            int index = md.data[i];
             mapSprites[i].setTexture(tileSheetTexture);
             mapSprites[i].setTextureRect(sf::IntRect(
                 { tiles[index].position.x, tiles[index].position.y }, 
-                { tileWidth, tileHeight }));
+                { md.tileWidth, md.tileHeight }));
 
-            mapSprites[i].setScale(sf::Vector2f(5, 5));
+            mapSprites[i].setScale(sf::Vector2f(md.scaleX, md.scaleY));
             mapSprites[i].setPosition(sf::Vector2f(
-                x * tileWidth * mapSprites[i].getScale().x, 
-                100+ y * tileWidth * mapSprites[i].getScale().y));
+                x * md.tileWidth * md.scaleX, 
+                y * md.tileWidth * md.scaleY));
         }
     }
 }
@@ -68,15 +75,14 @@ void Map::Update()
 
 void Map::Draw(sf::RenderWindow& window)
 {
-    for (int i = 0; i < mapSize; i++) {
+    for (int i = 0; i < md.dataLength; i++) {
         window.draw(mapSprites[i]);
     
     }
 }
 
-void MapLoader::Load(std::string filename)
+void MapLoader::Load(std::string filename, MapData& mapData)
 {
-    MapData data;
     std::string line;
     std::ifstream file(filename);
 
@@ -104,38 +110,44 @@ void MapLoader::Load(std::string filename)
                 std::string val = line.substr(count + 1, line.length() - count);
 
                 if (var == "version") {
-                data.version = std::stoi(val);
+                mapData.version = std::stoi(val);
                 }
                 if (var == "tileSheet") {
-                    data.tileSheet = val;
+                    mapData.tileSheet = val;
                 }             
                 else if (var == "name") {
-                    data.name = val;
+                    mapData.name = val;
+                }
+                else if (var == "mapWidth") {
+                    mapData.mapWidth = std::stoi(val);
+                }
+                else if (var == "mapHeight") {
+                    mapData.mapHeight = std::stoi(val);
                 }
                 else if (var == "tileWidth") {
-                    data.tileWidth = std::stoi(val);
+                    mapData.tileWidth = std::stoi(val);
                 }
                 else if (var == "tileHeight") {
-                    data.tileHeight = std::stoi(val);
+                    mapData.tileHeight = std::stoi(val);
                 }
                 else if (var == "scaleX") {
-                    data.scaleX = std::stoi(val);
+                    mapData.scaleX = std::stoi(val);
                 }
                 else if (var == "scaleY") {
-                    data.scaleY = std::stoi(val);
+                    mapData.scaleY = std::stoi(val);
                 }
                 else if (var == "dataLength") {
-                    data.dataLength = std::stoi(val);
+                    mapData.dataLength = std::stoi(val);
                 }
                 else if (var == "data") {
 
-                    data.data = new int[data.dataLength];
+                    mapData.data = new int[mapData.dataLength];
 
                     int offset = 0;
-                    for (int i = 0; i < data.dataLength; i++) {
+                    for (int i = 0; i < mapData.dataLength; i++) {
                         int index = val.find(',', offset);
                         std::string subData = val.substr(offset, index - offset);
-                        data.data[i] = std::stoi(subData);
+                        mapData.data[i] = std::stoi(subData);
                         offset = index + 1;
                     }
 

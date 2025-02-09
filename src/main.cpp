@@ -21,9 +21,7 @@ int main()
     Map map;
     sf::Clock clock;
     FrameRate frameRate;
-    MapLoader mapLoader;
-
-    mapLoader.Load("assets/maps/level 1.txt");
+    
 
 
     player.Initilize();
@@ -38,7 +36,7 @@ int main()
 
     enemy.Load();
     player.Load();
-    map.Load();
+    map.Load("assets/maps/level 1.txt");
 
     //---------------Load----------------------------
 

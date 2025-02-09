@@ -1,46 +1,17 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <vector>
+
+class Map;
 struct Tile;
-
-class Map
-{
-    Tile* tiles;
-
-    int tileWidth;
-    int tileHeight;
-    int totalTiles;
-    int totalTilesX;
-    int totalTilesY;
-
-    static const int mapSize = 6;
-    int mapWidth;
-    int mapHeight;
-    int mapNumbers[mapSize] = {
-        120, 121, 122,
-        144, 145, 146
-    };
-
-public:
-    sf::Texture tileSheetTexture = sf::Texture("assets/world/TileSheet.png");
-    sf::Sprite mapSprites[mapSize];
-    Map();
-    void Initilize();
-    void Load();
-    void Update();
-    void Draw(sf::RenderWindow& window);
-};
-
-
-struct Tile : private Map {
-    int id = -1;
-    sf::Vector2i position;
-
-};
 
 struct MapData {
     std::string tileSheet = "";
     int version = 0;
     std::string name = "";
+
+    int mapWidth = 0;
+    int mapHeight = 0;
 
     int tileWidth = 0;
     int tileHeight = 0;
@@ -55,6 +26,34 @@ struct MapData {
 
 class MapLoader {
 public:
+    void Load(std::string filename, MapData& mapData);
+
+};
+
+class Map
+{
+    Tile* tiles;
+
+    MapLoader mapLoader;
+    MapData md;
+
+    int totalTiles;
+    int totalTilesX;
+    int totalTilesY;
+
+public:
+    sf::Texture tileSheetTexture = sf::Texture("assets/world/TileSheet.png");
+
+    std::vector<sf::Sprite> mapSprites;
+    Map();
+    void Initilize();
     void Load(std::string filename);
+    void Update();
+    void Draw(sf::RenderWindow& window);
+};
+
+struct Tile : private Map {
+    int id = -1;
+    sf::Vector2i position;
 
 };
