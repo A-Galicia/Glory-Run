@@ -89,6 +89,11 @@ void MapLoader::Load(std::string filename, MapData& mapData)
     bool isMapValid = false;
 
     if (file.is_open()) {
+
+        int mapIndex = 0;
+        int mapWidthIndex = 0;
+        int mapHeightIndex = 0;
+
         while (std::getline(file, line)) {
             
             if (!isMapValid) {
@@ -112,7 +117,7 @@ void MapLoader::Load(std::string filename, MapData& mapData)
                 if (var == "version") {
                 mapData.version = std::stoi(val);
                 }
-                if (var == "tileSheet") {
+                else if (var == "tileSheet") {
                     mapData.tileSheet = val;
                 }             
                 else if (var == "name") {
@@ -142,14 +147,40 @@ void MapLoader::Load(std::string filename, MapData& mapData)
                 else if (var == "data") {
 
                     mapData.data = new int[mapData.dataLength];
+                    //mapData.data = new int[mapData.mapWidth];
 
-                    int offset = 0;
-                    for (int i = 0; i < mapData.dataLength; i++) {
+                    /*int offset = 0;
+                    for (int i = 0; i < mapData.mapWidth; i++) {
+                        int mapIndex = i + mapHeightIndex * mapData.mapWidth;
                         int index = val.find(',', offset);
                         std::string subData = val.substr(offset, index - offset);
                         mapData.data[i] = std::stoi(subData);
                         offset = index + 1;
                     }
+                    mapHeightIndex++;*/
+
+                        for (int y = 0; y < mapData.mapHeight; y++) {
+
+                            int offset = 0;
+                            if (!(var == "data")) {
+                                std::getline(file, line);
+                                int count = line.find('=');
+                                std::string var = line.substr(0, count);
+                                std::string val = line.substr(count + 1, line.length() - count);
+                                var = "no repeat";
+                            }
+
+                            for (int x = 0; x < mapData.mapWidth; x++) {
+                                int i = x + y * mapData.mapWidth;
+                                int index = val.find(',', offset);
+                                std::string subData = val.substr(offset, index - offset);
+                                mapData.data[i] = std::stoi(subData);
+                                offset = index + 1;
+                            }
+                        }
+
+                    
+
 
                 }
             }
